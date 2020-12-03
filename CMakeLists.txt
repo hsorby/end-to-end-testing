@@ -13,7 +13,6 @@ get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Modules")
 
 include(ExternalProject)
-include(colours)
 
 # Default values for test database.
 set(TEST_DB_GIT_BASE "https:////github.com")
@@ -64,13 +63,9 @@ if(NOT IS_MULTI_CONFIG)
 endif()
 set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "Internalise BUILD_SHARED_LIBS." FORCE)
 
-# General setup stuff
-#set(COMPARE_SCRIPT "compare_output.cmake")
-#include(cmake/colours.cmake)
-
-message(STATUS "SINGLE_ARCHITECUTRE_BUILD_TYPE: ${SINGLE_ARCHITECUTRE_BUILD_TYPE}")
-message(STATUS "SINGLE_BUILD_CONFIG: ${SINGLE_BUILD_CONFIG}")
-message(STATUS "E2E_TEST_DB: ${E2E_TEST_DB}")
+#message(STATUS "SINGLE_ARCHITECUTRE_BUILD_TYPE: ${SINGLE_ARCHITECUTRE_BUILD_TYPE}")
+#message(STATUS "SINGLE_BUILD_CONFIG: ${SINGLE_BUILD_CONFIG}")
+#message(STATUS "E2E_TEST_DB: ${E2E_TEST_DB}")
 
 set(ACQUIRE_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build-acquire${SINGLE_BUILD_TYPE}")
 if(NOT EXISTS "${ACQUIRE_BUILD_DIR}")
@@ -102,8 +97,6 @@ if(IS_DIRECTORY "${E2E_TEST_DB}")
     set(_LOCAL_TEST_DB "${E2E_TEST_DB}")
     unset(E2E_TEST_DB_COMMIT_HASH CACHE)
 else()
-    message(STATUS "GIT_REPOSITORY ${E2E_TEST_DB}")
-    message(STATUS "GIT_TAG ${E2E_TEST_DB_COMMIT_HASH}")
     ExternalProject_Add(process_tests
         PREFIX remote_database_ep_files
         SOURCE_DIR "remote_database"
