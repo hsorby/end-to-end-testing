@@ -1,6 +1,6 @@
 
 ==================
-End-to-end-testing
+End-to-end testing
 ==================
 
 This repository contains a framework for end-to-end testing of applications that use libCellML.
