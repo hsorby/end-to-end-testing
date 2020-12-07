@@ -1,114 +1,87 @@
-# end-to-end-testing
-This repository contains a template for an end-to-end testing framework for simple projects.
-It's intended to be used with libCellML.
+
+==================
+End-to-end-testing
+==================
+
+This repository contains a framework for end-to-end testing of applications that use libCellML.
 
 Requirements
-------------
+============
 
 - CMake (minimum 3.12, see https://cmake.org/);
 - C++ tool chain; and
 - libCellML installation (see https://github.com/cellml/libcellml).
 
 Setup
------
-Clone this repository into your computer.
-This will create a directory containing:
+=====
 
-Provided files:
+Clone this repository into your computer::
 
-.. code-block:: text 
+  git clone https://github.com/libcellml/end-to-end-testing.git
 
-    CMakeLists.txt
-    tests/
-        colours.cmake
-        compare_output.cmake
-        make_all_tests.cmake
-        run_all_tests.cmake
+Create a build directory::
 
-Template files: Edit the templates provided for each group of tests.
+  mkdir build
 
-.. code-block:: text 
+Configure
+=========
 
-    tests/
-        test_example.cmake:         For each group of tests, the user must supply a .cmake file
-                                    based upon the test_example.cmake file provided.  Add each file
-                                    to the `TEST_LIST` below.
-        example/                    A directory for each group of tests.
-            first_test_example/     For each test, supply a directory whose name duplicates the 
-                                    directory that the program to be tested is in.
-                test.cmake          This file defines which outputs are to be tested and the executable 
-                                    to run.
-                (other)             All exemplar files should be put into this directory too. 
+From inside the build directory::
 
-Run the example tests
----------------------
-Create a new directory and change into it.
-From that directory, enter the commands below to use this directory to create and run the tests.
+  cmake ../end-to-end-testing
 
-First we create the testing structure and populate it with the correct files:
+This will configure the framework for running the default end-to-end tests.
 
-.. code-block:: terminal
+Note: If libCellML is **not** installed into a system path you will need to add the configuration variable CMAKE_PREFIX_PATH to the configure step.
+The CMAKE_PREFIX_PATH must contain the installation path for libCellML.
+For example, if libCellML is installed to '/home/andre/usr/local' then modify the above configure command like so::
 
-    cmake -DINSTALL_PREFIX=relative/path/to/libcellml/installation -S path/to/the/tests/directory -B .
+  cmake -DCMAKE_PREFIX_PATH=/home/andre/usr/local ../end-to-end-testing
 
-Next, we build the test copies of each of the executables which are to be tested:
+Options
+-------
 
-.. code-block:: terminal
+The framework provides some options to change the default behaviour.
 
-    make -j
+===================  ===================================================================================================
+      Option               Description
+===================  ===================================================================================================
+TEST_DB              Set the location of the test database that defines the tests.
+TEST_DB_COMMIT_HASH  Set the commit hash of the test database to clone.
+libCellML_DIR        Alternative to specifying CMAKE_PREFIX_PATH if libCellML is installed into a non-standard location.
+===================  ===================================================================================================
 
-Finally, we run the test framework to compare the output from each test executable with the exemplars provided:
+TEST_DB
++++++++
 
-.. code-block:: terminal
+The TEST_DB option can be either a remote git repository or a location on the local disk.
+The default value is: https://github.com/libcellml/end-to-end-test-database.git
 
-    make -j test
+TEST_DB_COMMIT_HASH
++++++++++++++++++++
 
-Once the tests have been built and run, the results will be written to the terminal.
-If any tests fail, a file called `test_report.diff` can be found in this build directory which will detail where differences have been found between the exemplar files and those created when the tested executables were run.
+If the TEST_DB is a local directory the TEST_DB_COMMIT_HASH can be left empty or not defined.
+The default value is **main**.
 
-**NOTE** the example above has been deliberately set up so that the second test will fail, in order that the test report file is created and you can see what it looks like.
+libCellML_DIR
++++++++++++++
 
-Test your own programs
-----------------------
-1) For each group of tests you'll need your own copy (renamed as appropriate) of:
+If set libCellML_DIR should be a directory that contains a **libcellml-config.cmake** file.
 
-   a) `tests/test_example.cmake` This contains options about your build and your tests.
-   b) `tests/example` For each group of tests you'll need to create an appropriately named directory inside the testing structure.
-   c) `tests/example/first_test_example` For each test in the group, you need a directory whose name reflects the directory in which the program to be tested can be found.  
-     For example, here we have two test directories: `first_test_example` and `second_test_example`.
-     In the source location (`example_source` in this case) are also two directories named `first_test_example` and `second_test_example`.
-   d) `example_source` Your own directory in which the programs to be tested can be found for this group.
+Build
+=====
 
-   Once you've created the structure appropriate for your tests, you need to edit the configuration files to tell the testing where to look.  
+Run the build command to setup the tests as defined in the test database::
 
-2) Open the `CMakeLists.txt` file for editing.
-   You will need to alter the `TEST_LISTS` in this file to include your own name(s) instead of the `test_example.cmake` file that's in the template.
+  make
 
-3) Open your version of the `tests/test_example.cmake` file for editing.
-   You will find instructions in that file for what the variables mean.
-   Change them to reflect your structure.
+Test
+====
 
-4) For each of the tests you want to run, copy the `tests/example/first_test_example/test.cmake` file into each of the directories you created in step 1b.
-   Each of these should be edited to provide:
-   
-   a) The name of the executable.
-      Note that this should be the name of the *.cpp file containing the `main()` function, without its extension.
-   b) The names of any output files that should be compared.
-      Note that this can also include a file called `stdout` which will collect any terminal output from running the executable.
+Run the tests from the build directory with::
 
-5) In each of the directories containing `test.cmake` files (that you edited in step 4), make sure that you've also provided the exemplar files to test against.  
-   These files must have the same names as those listed in step 4b.
-   In the `first_test_example` we've used the `stdout` file to capture the terminal output.
+  ctest
 
-6) Create a temporary directory to house the testing files and results.
-   Navigate into this directory and open a terminal there. 
-   Repeat the steps in the example testing section above, but using your own test structure instead.
+or::
 
-   .. code-block:: terminal
-
-        cmake -DINSTALL_PREFIX=relative/path/to/libcellml/installation -S path/to/the/tests/directory -B .
-        make -j
-        make -j test
-
-7) If everything has worked and all tests have passed, you will see the green `[  PASSED  ] Tests complete.` printed to the terminal.
-   If everything has worked and some tests have failed, these will be listed in pink, and a file named `test_report.diff` will have been created detailing the differences found between your exemplar files and those produced by running the executables.  
+  make test
