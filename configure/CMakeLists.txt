@@ -22,6 +22,7 @@ project(TestRunner VERSION 1.0 LANGUAGES CXX)
 
 enable_testing()
 
+set(CMAKE_REFIX_PATH ${CMAKE_PREFIX_PATH})
 set(libCellML_DIR ${libCellML_DIR})
 find_package(libCellML REQUIRED CONFIG)
 ")

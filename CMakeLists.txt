@@ -23,26 +23,26 @@ set(_DEFAULT_TEST_DB_HASH "main")
 
 set(_ANNOTATION "The location of the database for the tests.")
 set(E2E_TEST_DB ${_DEFAULT_TEST_DB} CACHE PATH ${_ANNOTATION})
-if(DEFINED TEST_DB)
+if (DEFINED TEST_DB)
     set(E2E_TEST_DB ${TEST_DB} CACHE STRING ${_ANNOTATION} FORCE)
 endif()
 unset(TEST_DB CACHE)
 
 set(_ANNOTATION "The commit hash for the database.")
 set(E2E_TEST_DB_COMMIT_HASH "${_DEFAULT_TEST_DB_HASH}" CACHE PATH ${_ANNOTATION})
-if(DEFINED TEST_DB_COMMIT_HASH)
+if (DEFINED TEST_DB_COMMIT_HASH)
     set(E2E_TEST_DB_COMMIT_HASH ${TEST_DB_COMMIT_HASH} CACHE STRING ${_ANNOTATION} FORCE)
 endif()
 unset(TEST_DB_COMMIT_HASH CACHE)
 
 set(_ANNOTATION "Run tests in verbose mode.")
 set(E2E_TEST_VERBOSE OFF CACHE BOOL ${_ANNOTATION})
-if(DEFINED TEST_VERBOSE)
+if (DEFINED TEST_VERBOSE)
     set(E2E_TEST_VERBOSE ${TEST_VERBOSE} CACHE BOOL ${_ANNOTATION} FORCE)
 endif()
 unset(TEST_VERBOSE CACHE)
 
-if(IS_MULTI_CONFIG)
+if (IS_MULTI_CONFIG)
     set(MULTICONFIG_BUILD_CONFIG --config $<CONFIGURATION>)
 else()
     set(_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
@@ -58,7 +58,7 @@ endif()
 
 # Internalise CMake cache variables
 set(CMAKE_INSTALL_PREFIX "do not install this" CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX." FORCE)
-if(NOT IS_MULTI_CONFIG)
+if (NOT IS_MULTI_CONFIG)
     set(CMAKE_BUILD_TYPE ${E2E_TEST_BUILD_TYPE} CACHE INTERNAL "Internalise CMAKE_BUILD_TYPE, manipulate via E2E_TEST_BUILD_TYPE." FORCE)
 endif()
 set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "Internalise BUILD_SHARED_LIBS." FORCE)
@@ -68,20 +68,20 @@ set(BUILD_SHARED_LIBS TRUE CACHE INTERNAL "Internalise BUILD_SHARED_LIBS." FORCE
 #message(STATUS "E2E_TEST_DB: ${E2E_TEST_DB}")
 
 set(ACQUIRE_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build-acquire${SINGLE_BUILD_TYPE}")
-if(NOT EXISTS "${ACQUIRE_BUILD_DIR}")
+if (NOT EXISTS "${ACQUIRE_BUILD_DIR}")
     file(MAKE_DIRECTORY "${ACQUIRE_BUILD_DIR}")
 endif()
 set(CONFIGURE_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build-configure${SINGLE_BUILD_TYPE}")
 if (NOT EXISTS "${CONFIGURE_BUILD_DIR}")
     file(MAKE_DIRECTORY "${CONFIGURE_BUILD_DIR}")
-endif ()
+endif()
 set(BUILD_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/build-build${SINGLE_BUILD_TYPE}")
 if (NOT EXISTS "${BUILD_BUILD_DIR}")
     file(MAKE_DIRECTORY "${BUILD_BUILD_DIR}")
-endif ()
+endif()
 if (NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/CTestTestfile.cmake")
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/CTestTestfile.cmake" "# Generated test configuration file.\r\nsubdirs(\"${BUILD_BUILD_DIR}\")\r\n")
-endif ()
+endif()
 
 if (E2E_TEST_VERBOSE)
     set(CTEST_VERBOSE_FLAG -V)
@@ -109,7 +109,6 @@ else()
     set(_LOCAL_TEST_DB "${CMAKE_CURRENT_BINARY_DIR}/remote_database")
 endif()
 
-
 add_custom_target(acquire_tests
     COMMAND ${CMAKE_COMMAND}
         -DCMAKE_MODULE_PATH="${CMAKE_MODULE_PATH}"
@@ -127,6 +126,7 @@ add_custom_target(configure_tests
         -DCMAKE_MODULE_PATH="${CMAKE_MODULE_PATH}"
         -DDB_DIR="${_LOCAL_TEST_DB}"
         -DTESTS_BASE_DIR="${CMAKE_CURRENT_BINARY_DIR}/tests"
+        -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}"
         -DlibCellML_DIR="${libCellML_DIR}"
         ${CMAKE_CURRENT_SOURCE_DIR}/configure
     COMMAND ${CMAKE_COMMAND} --build . ${MULTICONFIG_BUILD_CONFIG}
@@ -135,7 +135,7 @@ add_custom_target(configure_tests
     WORKING_DIRECTORY "${CONFIGURE_BUILD_DIR}"
 )
 
-add_custom_target(build_tests
+add_custom_target(build_tests ALL
     COMMAND ${CMAKE_COMMAND} "${CMAKE_CURRENT_BINARY_DIR}/tests"
     COMMAND ${CMAKE_COMMAND} --build . ${MULTICONFIG_BUILD_CONFIG}
     COMMENT "Build tests."
