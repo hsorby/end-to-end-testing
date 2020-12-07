@@ -85,3 +85,8 @@ Run the tests from the build directory with::
 or::
 
   make test
+
+Further information
+===================
+
+For information on how to add an application to the database have a look at the README at https://github.com/libcellml/end-to-end-test-database.
