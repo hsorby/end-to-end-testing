@@ -114,6 +114,7 @@ add_custom_target(acquire_tests
         -DCMAKE_MODULE_PATH="${CMAKE_MODULE_PATH}"
         -DDB_DIR="${_LOCAL_TEST_DB}"
         -DTESTS_BASE_DIR="${CMAKE_CURRENT_BINARY_DIR}/tests"
+        -DDEFAULT_TEST_COMMIT_HASH="${_DEFAULT_TEST_DB_HASH}"
         ${CMAKE_CURRENT_SOURCE_DIR}/acquire
     COMMAND ${CMAKE_COMMAND} --build . ${MULTICONFIG_BUILD_CONFIG}
     COMMENT "Acquire tests."
