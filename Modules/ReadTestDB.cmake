@@ -32,7 +32,7 @@ macro(add_functional_test TEST_DESCRIPTION_FILE)
     set(TEST_${TEST_COUNT}_GIT_REPO ${TEST_GIT_REPO})
     set(TEST_${TEST_COUNT}_COMMIT_HASH ${TEST_COMMIT_HASH})
 
-    foreach(_prefix TEST_) # PYTEST_
+    foreach(_prefix TEST_ PYTEST_)
         set(${_prefix}${TEST_COUNT}_TARGETS ${${_prefix}TARGETS})
         set(${_prefix}${TEST_COUNT}_TARGETS_ARGS ${${_prefix}TARGETS_ARGS})
         set(${_prefix}${TEST_COUNT}_CMAKELISTS_DIR ${${_prefix}CMAKELISTS_DIR})
