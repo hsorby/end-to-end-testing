@@ -39,7 +39,8 @@ add_test(NAME ${TEST_NAME}
    -P ${TESTS_BASE_DIR}/run_test.cmake
 )
    
-set_tests_properties(${TEST_NAME} PROPERTIES ENVIRONMENT \"${TEST_ENV}\")
+string(CONFIGURE TEST_ENV CONFIGURED_TEST_ENV @ONLY)
+set_tests_properties(${TEST_NAME} PROPERTIES ENVIRONMENT \"${CONFIGURED_TEST_ENV}\")
 ")
     file(APPEND ${OUTPUT_FILENAME} ${_TMP_OUTPUT})
 endfunction()
