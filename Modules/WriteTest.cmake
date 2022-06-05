@@ -39,6 +39,8 @@ add_test(NAME ${TEST_NAME}
    -P ${TESTS_BASE_DIR}/run_test.cmake
 )
    
+message(STATUS "========================================")
+message(STATUS "TEST_ENV: ${TEST_ENV}")
 string(CONFIGURE TEST_ENV CONFIGURED_TEST_ENV @ONLY)
 set_tests_properties(${TEST_NAME} PROPERTIES ENVIRONMENT \"${CONFIGURED_TEST_ENV}\")
 ")
