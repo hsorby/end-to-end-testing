@@ -27,6 +27,8 @@ function(_write_test_to_file OUTPUT_FILENAME TEST_NAME TEST_CMD TEST_ROOT TEST_E
         set(EXPECTED_OUTPUT_ARGUMENT -DEXPECTED_OUTPUT=${TEST_ROOT}/${TEST_EXPECTED_RESULTS})
     endif ()
 
+    string(CONFIGURE "${TEST_ENV}" CONFIGURED_TEST_ENV @ONLY)
+
     set(_TMP_OUTPUT "
 # Create output directory
 file(MAKE_DIRECTORY \${CMAKE_BINARY_DIR}/test_runs/${TEST_NAME})
@@ -39,11 +41,9 @@ add_test(NAME ${TEST_NAME}
    -P ${TESTS_BASE_DIR}/run_test.cmake
 )
    
-message(STATUS "========================================")
-message(STATUS "TEST_ENV: ${TEST_ENV}")
-string(CONFIGURE TEST_ENV CONFIGURED_TEST_ENV @ONLY)
 set_tests_properties(${TEST_NAME} PROPERTIES ENVIRONMENT \"${CONFIGURED_TEST_ENV}\")
 ")
     file(APPEND ${OUTPUT_FILENAME} ${_TMP_OUTPUT})
+
 endfunction()
 
