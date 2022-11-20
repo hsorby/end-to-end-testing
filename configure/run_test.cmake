@@ -31,8 +31,9 @@ set(TEST_STDOUT_FILE "${TEST_WORKING_DIR}/${TEST_NAME}.ctest_stdout")
 file(WRITE ${TEST_STDOUT_FILE} ${_out})
 
 function(compare_files _test_name _file1 _file2)
+    set(NUMDIFF_EXE "@NUMDIFF_EXE@")
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E compare_files ${_file1} ${_file2}
+        COMMAND "${NUMDIFF_EXE}" ${_file1} ${_file2}
         RESULT_VARIABLE _RESULT
         ERROR_VARIABLE _ERROR
         OUTPUT_VARIABLE _OUTPUT

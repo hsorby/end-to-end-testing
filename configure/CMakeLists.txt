@@ -11,7 +11,8 @@ project(testsetup VERSION 1.0 LANGUAGES CXX)
 include(ReadTestDB)
 include(WriteTest)
 
-file(COPY run_test.cmake DESTINATION ${TESTS_BASE_DIR})
+set(NUMDIFF_EXE "${COMPARE_EXE}")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/run_test.cmake ${TESTS_BASE_DIR} @ONLY)
 
 read_test_db("${DB_DIR}")
 

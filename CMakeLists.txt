@@ -24,16 +24,30 @@ set(_DEFAULT_TEST_DB_HASH "main")
 set(_ANNOTATION "The location of the database for the tests.")
 set(E2E_TEST_DB ${_DEFAULT_TEST_DB} CACHE PATH ${_ANNOTATION})
 if (DEFINED TEST_DB)
-    set(E2E_TEST_DB ${TEST_DB} CACHE STRING ${_ANNOTATION} FORCE)
+    set(E2E_TEST_DB ${TEST_DB} CACHE PATH ${_ANNOTATION} FORCE)
 endif()
 unset(TEST_DB CACHE)
 
 set(_ANNOTATION "The commit hash for the database.")
 set(E2E_TEST_DB_COMMIT_HASH "${_DEFAULT_TEST_DB_HASH}" CACHE PATH ${_ANNOTATION})
 if (DEFINED TEST_DB_COMMIT_HASH)
-    set(E2E_TEST_DB_COMMIT_HASH ${TEST_DB_COMMIT_HASH} CACHE STRING ${_ANNOTATION} FORCE)
+    set(E2E_TEST_DB_COMMIT_HASH ${TEST_DB_COMMIT_HASH} CACHE PATH ${_ANNOTATION} FORCE)
 endif()
 unset(TEST_DB_COMMIT_HASH CACHE)
+
+set(_ANNOTATION "The repository of the application for comparing files.")
+set(E2E_COMPARE_APP_REPO "https://github.com/cmlibs-dependencies/numdiff" CACHE STRING ${_ANNOTATION})
+if (DEFINED COMPARE_APP_REPO)
+    set(E2E_COMPARE_APP_REPO ${COMPARE_APP_REPO} CACHE STRING ${_ANNOTATION} FORCE)
+endif()
+unset(COMPARE_APP_REPO CACHE)
+
+set(_ANNOTATION "The commit hash/tag for the compare files application.")
+set(E2E_COMPARE_APP_HASH "main" CACHE STRING ${_ANNOTATION})
+if (DEFINED COMPARE_APP_HASH)
+    set(E2E_COMPARE_APP_HASH ${COMPARE_APP_HASH} CACHE STRING ${_ANNOTATION} FORCE)
+endif()
+unset(COMPARE_APP_HASH CACHE)
 
 set(_ANNOTATION "Run tests in verbose mode.")
 set(E2E_TEST_VERBOSE OFF CACHE BOOL ${_ANNOTATION})
@@ -109,6 +123,13 @@ else()
     set(_LOCAL_TEST_DB "${CMAKE_CURRENT_BINARY_DIR}/remote_database")
 endif()
 
+ExternalProject_Add(compare_app
+    PREFIX compare_app_ep_files
+    GIT_REPOSITORY ${E2E_COMPARE_APP_REPO}
+    GIT_TAG ${E2E_COMPARE_APP_HASH}
+    CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
+)
+
 add_custom_target(acquire_tests
     COMMAND ${CMAKE_COMMAND}
         -DCMAKE_MODULE_PATH="${CMAKE_MODULE_PATH}"
@@ -118,7 +139,7 @@ add_custom_target(acquire_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/acquire
     COMMAND ${CMAKE_COMMAND} --build . ${MULTICONFIG_BUILD_CONFIG}
     COMMENT "Acquire tests."
-    DEPENDS process_tests
+    DEPENDS process_tests compare_app
     WORKING_DIRECTORY "${ACQUIRE_BUILD_DIR}"
 )
 
@@ -129,6 +150,7 @@ add_custom_target(configure_tests
         -DTESTS_BASE_DIR="${CMAKE_CURRENT_BINARY_DIR}/tests"
         -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}"
         -DlibCellML_DIR="${libCellML_DIR}"
+        -DCOMPARE_EXE="${CMAKE_CURRENT_BINARY_DIR}/install/bin/numdiff"
         ${CMAKE_CURRENT_SOURCE_DIR}/configure
     COMMAND ${CMAKE_COMMAND} --build . ${MULTICONFIG_BUILD_CONFIG}
     COMMENT "Configure tests."
