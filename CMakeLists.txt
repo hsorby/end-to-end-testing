@@ -175,7 +175,7 @@ add_custom_target(test
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
-# Hide GUI some variables that we don't want to see.
+# Hide some GUI variables that we don't want to see.
 if (APPLE)
     mark_as_advanced(CMAKE_OSX_ARCHITECTURES CMAKE_OSX_DEPLOYMENT_TARGET CMAKE_OSX_SYSROOT)
 endif()
