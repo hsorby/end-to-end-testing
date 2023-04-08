@@ -6,12 +6,12 @@
 #  - DEFAULT_TEST_COMMIT_HASH: Default test commit hash if none given.
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project(Acquire VERSION 1.0)
+project(Acquire VERSION 1.1.0)
 
 include(ReadTestDB)
 include(AcquireTest)
 
-read_test_db("${DB_DIR}")
+read_test_db("${DB_DIR}" "${TESTS_BASE_DIR}")
 
 set(TEST_INDEX 0)
 while(TEST_INDEX LESS TEST_COUNT)

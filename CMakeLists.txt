@@ -169,7 +169,7 @@ add_custom_target(build_tests ALL
 )
 
 add_custom_target(test
-    COMMAND ${CMAKE_CTEST_COMMAND} ${CTEST_VERBOSE_FLAG}
+    COMMAND ${CMAKE_CTEST_COMMAND} ${CTEST_VERBOSE_FLAG} --output-on-failure
     COMMENT "Run tests."
     DEPENDS build_tests
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"

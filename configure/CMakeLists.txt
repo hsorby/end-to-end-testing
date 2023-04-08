@@ -14,7 +14,7 @@ include(WriteTest)
 set(NUMDIFF_EXE "${COMPARE_EXE}")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/run_test.cmake ${TESTS_BASE_DIR} @ONLY)
 
-read_test_db("${DB_DIR}")
+read_test_db("${DB_DIR}" "${TESTS_BASE_DIR}")
 
 set(SETUP_CMAKELISTS_FILE ${TESTS_BASE_DIR}/CMakeLists.txt)
 file(WRITE ${SETUP_CMAKELISTS_FILE} "
