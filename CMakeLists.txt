@@ -3,7 +3,9 @@
     libCellML library.
 ]]
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "11" CACHE STRING "Minimum OS X deployment version")
+
 project(End-To-End-Testing)
 
 cmake_policy(SET CMP0007 NEW)
@@ -21,7 +23,6 @@ set(TEST_DB_REPO_NAME end-to-end-test-database)
 set(_DEFAULT_TEST_DB ${TEST_DB_GIT_BASE}/${TEST_DB_ORG}/${TEST_DB_REPO_NAME})
 set(_DEFAULT_TEST_DB_HASH "main")
 
-message(STATUS "_DEFAULT_TEST_DB: ${_DEFAULT_TEST_DB}")
 set(_ANNOTATION "The location of the database for the tests.")
 set(E2E_TEST_DB ${_DEFAULT_TEST_DB} CACHE STRING ${_ANNOTATION})
 if (DEFINED TEST_DB)

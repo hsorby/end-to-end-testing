@@ -5,7 +5,9 @@
 #  - TESTS_BASE_DIR: Base directory where the examples to be tested are downloaded to.
 #  - libCellML_DIR: A directory where libcellml-config.cmake exists.
 
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "11" CACHE STRING "Minimum OS X deployment version")
+
 project(testsetup VERSION 1.0 LANGUAGES CXX)
 
 include(ReadTestDB)
@@ -18,7 +20,9 @@ read_test_db("${DB_DIR}" "${TESTS_BASE_DIR}")
 
 set(SETUP_CMAKELISTS_FILE ${TESTS_BASE_DIR}/CMakeLists.txt)
 file(WRITE ${SETUP_CMAKELISTS_FILE} "
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
+set(CMAKE_OSX_DEPLOYMENT_TARGET \"11\" CACHE STRING \"Minimum OS X deployment version\")
+
 project(TestRunner VERSION 1.0 LANGUAGES CXX)
 
 enable_testing()
@@ -67,7 +71,7 @@ while(TEST_INDEX LESS TEST_COUNT)
                         set(_current_name ${_current_name}_${CMAKELISTS_DIR_INDEX})
                     endif ()
                     set(_current_root ${_current_git_repo})
-                    if (_prefix STREQUAL "TEST_" AND EXISTS "${_current_git_repo}/CMakeLists.txt")
+                    if (_prefix STREQUAL "TEST_" AND EXISTS "${_current_git_repo}/${_current_cmakelists_dir}/CMakeLists.txt")
                         file(APPEND ${SETUP_CMAKELISTS_FILE} "add_subdirectory(${_current_git_repo}/${_current_cmakelists_dir} ${_current_name})\n")
                     endif ()
                 else ()
